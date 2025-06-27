@@ -1,243 +1,160 @@
+# Streamlit Lab: Titanic Passenger Survival Prediction
 
-# AI Risk Score - V4-2: Career Path Diversification Tool
+## Project Title and Description
 
-## Overview
+This Streamlit application is a lab project designed to predict the survival of passengers on the Titanic based on various features like age, gender, class, and fare. It uses a pre-trained machine learning model to make predictions and provides users with an interactive interface to explore different feature combinations and see their impact on the predicted survival probability.  This project serves as a demonstration of deploying machine learning models with Streamlit and allows users to gain insights into the factors that may have influenced survival rates on the Titanic.
 
-The "Career Path Diversification Tool" is a Streamlit application designed to help users understand and mitigate their exposure to systematic AI risk in their careers. Inspired by concepts from recent advancements in AI, this tool allows users to explore how different career choices and personal development efforts influence their AI displacement risk profile and potential insurance premiums. It focuses on illustrating "Systematic Risk Exposure Mitigation" or "Career Path Diversification" by simulating the impact of career transitions and skill acquisition on an individual's overall risk score.
+## Features
 
-This application transforms raw synthetic data into interactive visualizations, providing detailed insights and explanations directly on the charts. Users can interact with input forms and widgets to experiment with various parameters and observe real-time updates, thereby gaining a clear understanding of key concepts such as Idiosyncratic Risk, Systematic Risk, and their implications for career resilience.
+*   **Interactive Input Forms:** Users can input passenger details through interactive Streamlit widgets (e.g., dropdowns, sliders, number inputs).
+*   **Real-time Prediction:** The application makes a survival prediction based on the entered passenger features in real-time.
+*   **Feature Exploration:** Users can experiment with different feature values to understand their impact on the predicted survival probability.
+*   **Clear Output Display:** The predicted survival probability is clearly displayed, along with an interpretation of the result.
+*   **Data Visualization (Optional):**  Future versions may include visualizations (e.g., histograms, scatter plots) to explore the Titanic dataset.
+*   **Model Explanation (Optional):**  Future versions may include tools to explain the model's prediction (e.g., feature importance).
 
-## Core Concepts and Mathematical Foundations
+## Getting Started
 
-This section details the fundamental mathematical models and concepts implemented in the application.
+### Prerequisites
 
-### Idiosyncratic Risk ($V_i(t)$)
-The Idiosyncratic Risk, or Vulnerability, quantifies an individual's specific vulnerability to job displacement, reflecting factors within their direct control. It is calculated using:
-$$
-V_i(t) = \min(100.0, \max(5.0, V_{raw} - 50.0))
-$$
-Where:
-- $V_i(t)$: The final Idiosyncratic Risk score at time $t$.
-- $V_{raw}$: The raw (unnormalized) Idiosyncratic Risk score.
+Before you begin, ensure you have the following installed:
 
-This formula normalizes the raw idiosyncratic risk score to a predefined range (e.g., 5-100), ensuring the score remains within an interpretable scale, making it consistent and comparable.
+*   **Python:**  Python 3.7 or higher is recommended.  You can download it from [https://www.python.org/downloads/](https://www.python.org/downloads/).
+*   **pip:**  pip is the package installer for Python.  It usually comes with Python installations.  Verify its presence by running `pip --version` in your terminal.
 
-### Raw Idiosyncratic Risk ($V_{raw}$)
-The raw Idiosyncratic Risk Score is an intermediate calculation before normalization, combining key individual-specific factors. It is calculated using:
-$$
-V_{raw} = FHC \cdot (w_{CR} FCR + w_{US} FUS)
-$$
-Where:
-- $V_{raw}$: Raw Idiosyncratic Risk Score.
-- $FHC$: Human Capital Factor, assessing foundational resilience.
-- $FCR$: Company Risk Factor, assessing employer stability.
-- $FUS$: Upskilling Factor, assessing proactive training efforts.
-- $w_{CR}$: Weight assigned to the Company Risk Factor (e.g., 0.4).
-- $w_{US}$: Weight assigned to the Upskilling Factor (e.g., 0.6).
-
-This formula combines the Human Capital, Company Risk, and Upskilling factors, weighted according to their importance, to derive an initial unnormalized vulnerability score that reflects an individual's total manageable risk.
-
-### Human Capital Factor ($FHC$)
-The Human Capital Factor assesses an individual's foundational resilience based on their educational and professional background. It is calculated as a weighted product of several sub-factors:
-$$
-FHC = f_{role} \cdot f_{level} \cdot f_{field} \cdot f_{school} \cdot f_{exp}
-$$
-Where:
-- $FHC$: Human Capital Factor.
-- $f_{role}$: Role Multiplier, representing inherent job title vulnerability.
-- $f_{level}$: Education Level Factor, based on highest education attained.
-- $f_{field}$: Education Field Factor, rewarding transferable and in-demand skills.
-- $f_{school}$: Institution Tier Factor, a proxy for training quality and network.
-- $f_{exp}$: Experience Factor, a decaying function of years of experience.
-
-This factor is a multiplicative combination of sub-factors reflecting various aspects of human capital, providing a comprehensive assessment of an individual's intrinsic resilience against job displacement.
-
-### Experience Factor ($f_{exp}$)
-The Experience Factor models how an individual's years of professional experience influence their vulnerability, accounting for diminishing returns. It is calculated using:
-$$
-f_{exp} = 1 - (a \cdot \min(Y_i, Y_{cap}))
-$$
-Where:
-- $f_{exp}$: Experience Factor.
-- $a$: Decay constant (e.g., 0.015, as per document example).
-- $Y_i$: Years of experience of the individual.
-- $Y_{cap}$: Capped years of experience (e.g., 20, as per document example).
-
-This decaying function captures the principle that professional experience reduces vulnerability, but with diminishing returns after a certain point, reflecting that excessive experience beyond a cap offers diminishing additional risk reduction benefits.
-
-### Company Risk Factor ($FCR$)
-The Company Risk Factor quantifies the stability and growth prospects of the individual's current employer, analogous to a corporate credit rating. It is calculated using:
-$$
-FCR = w_1 \cdot S_{senti} + w_2 \cdot S_{fin} + w_3 \cdot S_{growth}
-$$
-Where:
-- $FCR$: Company Risk Factor.
-- $S_{senti}$: Sentiment Score, derived from real-time NLP analysis of news concerning the company.
-- $S_{fin}$: Financial Health Score, based on company's financial statements (e.g., 10-K, 10-Q filings).
-- $S_{growth}$: Growth & AI-Adoption Score, based on analyst reports and R&D spending.
-- $w_1, w_2, w_3$: Weights summing to 1.0 (e.g., 0.33 each for simplicity, assuming equal weighting unless otherwise specified).
-
-This factor provides a comprehensive assessment of the employer's stability and proactive adaptation to AI, which directly impacts the employee's displacement risk.
-
-### Upskilling Factor ($FUS$)
-The Upskilling Factor differentiates between skill types, rewarding portable skills more heavily, and reflects the impact of an individual's proactive training efforts. It is calculated using:
-$$
-FUS = 1 - (\gamma_{gen} P_{gen}(t) + \gamma_{spec} P_{spec}(t))
-$$
-Where:
-- $FUS$: Upskilling Factor.
-- $P_{gen}(t)$: The individual's training progress (from 0 to 1) in general or "portable" skills.
-- $P_{spec}(t)$: The individual's training progress (from 0 to 1) in "firm-specific" skills.
-- $\gamma_{gen}$: Weighting parameter for general skills.
-- $\gamma_{spec}$: Weighting parameter for firm-specific skills (where $\gamma_{gen} > \gamma_{spec}$ to reward portable skills more heavily).
-
-This factor directly influences the Idiosyncratic Risk, reflecting that continuous learning and skill acquisition, especially in portable skills, can significantly reduce an individual's vulnerability.
-
-### Systematic Risk ($H_i$)
-The Systematic Risk score is a dynamic index reflecting the macro-level automation hazard of an occupation, adjusted by broader environmental conditions. It is calculated using:
-$$
-H_i = H_{base}(t) \cdot (w_{econ} M_{econ} + w_{inno} IAI)
-$$
-Where:
-- $H_i$: The final Systematic Risk score at time $t$.
-- $H_{base}(t)$: The Base Occupational Hazard for the occupation.
-- $M_{econ}$: Economic Climate Modifier, a composite index reflecting macroeconomic environment.
-- $IAI$: AI Innovation Index, a momentum indicator reflecting the velocity of technological change.
-- $w_{econ}$: Calibration weight for the economic modifier (e.g., 0.5).
-- $w_{inno}$: Calibration weight for the AI innovation index (e.g., 0.5).
-
-This formula quantifies the unavoidable hazard inherent to an entire occupation, dynamically adjusting it based on the prevailing economic climate and the pace of AI innovation.
-
-### Time-to-Value (TTV) Modified Base Occupational Hazard ($H_{base}(k)$)
-The Base Occupational Hazard for an occupation can change over time, especially during a career transition. The TTV modifier for realism during transition is calculated using:
-$$
-H_{base}(k) = \left(1 - \frac{k}{TTV}\right) H_{current} + \left(\frac{k}{TTV}\right) H_{target}
-$$
-Where:
-- $H_{base}(k)$: The Base Occupational Hazard score after $k$ months of transition.
-- $k$: The number of months that have elapsed since the completion of the transition pathway.
-- $TTV$: The total number of months in the Time-to-Value period (e.g., 12 months).
-- $H_{current}$: The Base Occupational Hazard score of the individual's original industry.
-- $H_{target}$: The Base Occupational Hazard score of the new target industry.
-
-This formula models the gradual reduction in systematic risk as an individual transitions to a lower-risk occupation. It showcases the concept of "Career Path Diversification" by demonstrating how systematic risk can be actively mitigated over time.
-
-### Annual Claim Probability ($P_{claim}$)
-The annual probability of a job displacement claim is modeled as the joint probability of a systemic event occurring in the individual's industry and that event leading to a loss for that specific individual. It is calculated using:
-$$
-P_{claim} = P_{systemic} \cdot P_{individual|systemic}
-$$
-Where:
-- $P_{claim}$: The annual probability of a claim.
-- $P_{systemic}$: The probability of a systemic event occurring in the individual's industry.
-- $P_{individual|systemic}$: The conditional probability of individual job loss given a systemic event.
-
-This formula is a core component of the risk calculation, translating the Idiosyncratic and Systematic Risk scores into a combined probability of job displacement for the individual in a given year.
-
-### Systemic Event Base Probability ($P_{systemic}$)
-The Systemic Event Base Probability converts the Systematic Risk score into a probability of a systemic displacement event occurring. It is calculated using:
-$$
-P_{systemic} = \frac{H_i}{100} \cdot \beta_{systemic}
-$$
-Where:
-- $P_{systemic}$: The probability of a systemic displacement event affecting the individual's industry.
-- $H_i$: The Systematic Risk Score.
-- $\beta_{systemic}$: A calibrated actuarial parameter representing the base annual probability of a systemic displacement event in the highest-risk industry (e.g., 0.10).
-
-This formula scales the systematic risk score into a concrete probability, anchoring it to a realistic baseline frequency for industry-wide displacement events.
-
-### Individual Loss Base Probability ($P_{individual|systemic}$)
-The Individual Loss Base Probability given a Systemic Event quantifies the conditional likelihood of an individual's job loss if a systemic event has occurred. It is calculated using:
-$$
-P_{individual|systemic} = \frac{V_i(t)}{100} \cdot \beta_{individual}
-$$
-Where:
-- $P_{individual|systemic}$: The conditional probability of job loss for the individual, given a systemic event has occurred.
-- $V_i(t)$: The Idiosyncratic Risk Score.
-- $\beta_{individual}$: A calibrated actuarial parameter representing the base conditional probability of job loss for the most vulnerable person (e.g., 0.50).
-
-This formula translates the individual's vulnerability score into a conditional probability of job loss, reflecting how personal factors influence the outcome during a systemic event.
-
-### Annual Expected Loss ($E[Loss]$)
-The Annual Expected Loss represents the total payout amount multiplied by the probability of a claim, providing a financial quantification of risk. It is calculated using:
-$$
-E[Loss] = P_{claim} \cdot L_{payout}
-$$
-Where:
-- $E[Loss]$: The Annual Expected Financial Loss.
-- $P_{claim}$: The Annual Claim Probability.
-- $L_{payout}$: The Total Potential Payout Amount if a claim is triggered.
-
-This formula is crucial for converting a probability of an event into a tangible financial impact, forming the basis for premium determination.
-
-### Total Payout Amount ($L_{payout}$)
-The Total Payout Amount represents the financial benefit defined by the policy terms that would be paid out if a claim is triggered. It is calculated using:
-$$
-L_{payout} = \left( \frac{\text{Annual Salary}}{12} \right) \cdot \text{Coverage Duration} \cdot \text{Coverage Percentage}
-$$
-Where:
-- $L_{payout}$: The total financial benefit paid out in case of a claim.
-- $\text{Annual Salary}$: The user's annual salary.
-- $\text{Coverage Duration}$: The duration of coverage in months (e.g., 6 months).
-- $\text{Coverage Percentage}$: The percentage of salary covered by the policy (e.g., 25%).
-
-This formula determines the maximum financial benefit an individual would receive if job displacement occurs, directly impacting the scale of the potential loss.
-
-### Monthly Insurance Premium ($P_{monthly}$)
-The Monthly Insurance Premium is the final financial output, translating the expected loss into a periodic payment. It is calculated using:
-$$
-P_{monthly} = \max \left( \frac{E[Loss] \cdot \lambda}{12}, P_{min} \right)
-$$
-Where:
-- $P_{monthly}$: The final Monthly Insurance Premium.
-- $E[Loss]$: The Annual Expected Financial Loss.
-- $\lambda$: Loading Factor, a standard insurance multiplier to cover administrative costs, operational expenses, and profit margin (e.g., 1.5).
-- $P_{min}$: Minimum monthly premium to ensure policy viability (e.g., $20.00).
-
-This formula ensures the premium covers the expected losses and operational costs, while also setting a floor to maintain policy viability, effectively operationalizing the "Education is Insurance" concept.
-
-## Setup and Usage
-
-To run this Streamlit application locally, follow these steps:
+### Installation
 
 1.  **Clone the repository:**
-    \`\`\`bash
-    git clone [repository-url]
-    cd [repository-name]
-    \`\`\`
-2.  **Create a virtual environment (recommended):**
-    \`\`\`bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-    \`\`\`
-3.  **Install the dependencies:**
-    \`\`\`bash
-    pip install -r requirements.txt
-    \`\`\`
-4.  **Run the Streamlit application:**
-    \`\`\`bash
-    streamlit run app.py
-    \`\`\`
 
-The application will open in your default web browser.
+    ```bash
+    git clone <repository_url>
+    cd <repository_name>
+    ```
+
+    Replace `<repository_url>` with the actual URL of your project's GitHub repository and `<repository_name>` with the name of the directory created by cloning.
+
+2.  **Create a virtual environment (recommended):**
+
+    ```bash
+    python -m venv venv
+    ```
+
+    Activate the virtual environment:
+
+    *   **On Windows:**
+
+        ```bash
+        venv\Scripts\activate
+        ```
+
+    *   **On macOS and Linux:**
+
+        ```bash
+        source venv/bin/activate
+        ```
+
+3.  **Install dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    This command installs all the necessary Python packages listed in the `requirements.txt` file.  Make sure the `requirements.txt` file is in the root of your project directory and contains all the necessary dependencies.  A sample `requirements.txt` is shown below.
+
+    ```
+    streamlit
+    scikit-learn
+    pandas
+    numpy
+    ```
+
+## Usage
+
+1.  **Run the Streamlit application:**
+
+    ```bash
+    streamlit run app.py
+    ```
+
+    Replace `app.py` with the actual name of your Streamlit application file if different.  This command will launch the application in your web browser (usually at `http://localhost:8501`).
+
+2.  **Interact with the application:**
+
+    *   Enter the passenger's details through the provided input forms (e.g., age, sex, class).
+    *   Observe the predicted survival probability based on your input.
+    *   Experiment with different feature combinations to explore their impact on the prediction.
 
 ## Project Structure
 
-\`\`\`
-.
-├── app.py
-├── requirements.txt
-├── Dockerfile
-├── README.md
-├── application_pages/
-│   ├── __init__.py
-│   ├── home_page.py
-│   └── simulation_page.py
-├── data_utils.py
-├── calculations.py
-└── visualization.py
-\`\`\`
+```
+TitanicSurvivalPrediction/
+├── app.py           # Main Streamlit application file
+├── model.pkl        # Pre-trained machine learning model (e.g., pickled Scikit-learn model)
+├── README.md        # This README file
+├── requirements.txt # List of Python dependencies
+├── data/           # (Optional) Directory for data files
+│   └── titanic.csv    # (Optional) The Titanic dataset (if used directly)
+└── .gitignore       # (Optional) Specifies intentionally untracked files that Git should ignore
+```
+
+*   `app.py`:  Contains the Streamlit application code, including the user interface and model prediction logic.
+*   `model.pkl`: Stores the pre-trained machine learning model.  Pickling is a way to serialize Python objects.  This file is loaded when the application starts.  Consider using a different file extension and format, such as joblib.
+*   `README.md`:  Provides information about the project, installation, usage, and more.
+*   `requirements.txt`: Lists the Python packages required to run the application.
+*   `data/`: An optional directory to store data files related to the project. This can include the Titanic dataset or other relevant data.
+*   `.gitignore`:  An optional file that specifies files and directories that Git should ignore (e.g., virtual environment folder, `.pyc` files, data files that are too large).
+
+## Technology Stack
+
+*   **Python:** The primary programming language.
+*   **Streamlit:**  A Python library for creating interactive web applications with minimal code.
+*   **Scikit-learn:**  A Python library for machine learning (used for building and training the prediction model).
+*   **Pandas:** A Python library for data manipulation and analysis (used for reading and processing the Titanic dataset).
+*   **NumPy:** A Python library for numerical computing (used for array manipulation and mathematical operations).
+
+## Contributing
+
+We welcome contributions to this project!  To contribute, please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch for your feature or bug fix: `git checkout -b feature/your-feature-name` or `git checkout -b bugfix/your-bugfix-name`.
+3.  Make your changes and commit them with descriptive commit messages.
+4.  Push your changes to your fork: `git push origin feature/your-feature-name`.
+5.  Create a pull request to the main branch of the original repository.
+
+Please ensure your code adheres to the project's coding style and includes appropriate tests.  We appreciate contributions that improve the application's functionality, user experience, or code quality.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) - see the `LICENSE` file for details.  If there is no LICENSE file, create one.  A basic MIT License example:
+
+```
+MIT License
+
+Copyright (c) [Year] [Your Name]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## Contact
 
-For any questions or feedback, please contact QuantUniversity.
+For questions or issues related to this project, please contact:
+
+*   [Your Name] - [Your Email Address]
+*   You can also open an issue on the [GitHub repository](<repository_url>).
