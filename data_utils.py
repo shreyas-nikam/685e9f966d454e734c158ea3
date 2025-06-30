@@ -1,102 +1,99 @@
-
 import pandas as pd
 import numpy as np
 
 def load_job_data():
     """
-    Generates synthetic O*NET-like data for job roles, including base AI hazard scores and f_role multipliers.
+    Generates synthetic O*NET-like data for job roles, their intrinsic AI hazard scores,
+    and role multipliers for Human Capital factors.
     """
     data = {
-        'Job Title': [
-            "Data Scientist", "Software Engineer", "Marketing Manager",
-            "Financial Analyst", "HR Specialist", "Customer Service Rep",
-            "Truck Driver", "Accountant", "Registered Nurse", "Teacher",
-            "AI Engineer", "Machine Learning Scientist", "Cloud Architect",
-            "Business Analyst", "Operations Manager", "Graphic Designer",
-            "Sales Representative", "Journalist", "Legal Assistant", "Pharmacist"
+        "Job Title": [
+            "Data Scientist", "Software Engineer", "Accountant", "Customer Service Rep",
+            "Truck Driver", "Graphic Designer", "HR Manager", "Financial Analyst",
+            "Marketing Specialist", "Operations Manager", "Nurse", "Teacher",
+            "Construction Worker", "Chef", "Lawyer", "Doctor"
         ],
-        'Base_AI_Hazard': [
-            85, 75, 55, 65, 45, 90, 70, 80, 30, 40, 95, 92, 80, 60, 50, 60, 55, 70, 85, 40
+        "f_role": [ # Role Multiplier for FHC (lower is better, <1)
+            0.6, 0.7, 0.9, 0.95,
+            0.8, 0.75, 0.85, 0.7,
+            0.8, 0.8, 0.65, 0.65,
+            0.9, 0.85, 0.7, 0.6
         ],
-        'f_role_multiplier': [
-            1.1, 1.05, 0.9, 0.95, 0.85, 1.2, 1.0, 1.15, 0.7, 0.8, 1.25, 1.2, 1.1, 0.9, 0.85, 0.9, 0.8, 1.0, 1.15, 0.8
+        "H_base": [ # Base Occupational Hazard (higher is more risk, 0-100)
+            85, 70, 90, 95,
+            75, 60, 50, 80,
+            65, 55, 30, 25,
+            40, 35, 60, 20
         ]
     }
-    df = pd.DataFrame(data)
-    df.set_index('Job Title', inplace=True)
-    return df
+    return pd.DataFrame(data)
 
-def load_human_capital_factors():
+def load_education_data():
     """
-    Generates lookup tables for Human Capital factors.
+    Generates lookup tables for education level and field factors.
     """
-    education_level_factors = {
-        "PhD": 0.7,
-        "Master's": 0.8,
-        "Bachelor's": 0.9,
-        "Associate's": 1.0,
-        "High School": 1.1
+    education_level_data = {
+        "PhD": 0.5, "Master's": 0.6, "Bachelor's": 0.7,
+        "Associate's": 0.8, "High School": 0.9, "None": 1.0
+    }
+    education_field_data = {
+        "Tech/Engineering": 0.6, "Science/Research": 0.65, "Healthcare": 0.55,
+        "Business/Finance": 0.7, "Arts/Humanities": 0.8, "Liberal Arts": 0.85,
+        "Trades/Vocational": 0.75, "Education": 0.7
+    }
+    return education_level_data, education_field_data
+
+def load_school_tier_data():
+    """
+    Generates lookup table for institution tier factors.
+    """
+    return {
+        "Tier 1 (Top 25)": 0.6,
+        "Tier 2 (Top 50)": 0.7,
+        "Tier 3 (Top 100)": 0.8,
+        "Tier 4 (Others)": 0.9,
+        "No Degree": 1.0
     }
 
-    education_field_factors = {
-        "Tech/Engineering": 0.75,
-        "Science/Research": 0.8,
-        "Business/Finance": 0.9,
-        "Healthcare": 0.7,
-        "Arts/Humanities": 1.0,
-        "Education": 0.85,
-        "Law": 0.95
-    }
-
-    school_tier_factors = {
-        "Tier 1 (Ivy League/Top Research)": 0.7,
-        "Tier 2 (Reputable State/Private)": 0.8,
-        "Tier 3 (Local/Community)": 0.9
-    }
-
-    return education_level_factors, education_field_factors, school_tier_factors
-
-def load_company_risk_factors():
+def load_company_type_data():
     """
     Generates dummy data for Company Risk factors based on company types.
-    S_senti, S_fin, S_growth are inversely correlated with risk (lower score = less risk).
-    Here, we'll use base risk values that contribute to FCR.
-    The FCR formula specifies FCR = w1*Ssenti + w2*Sfin + w3*Sgrowth.
-    Higher S_values here means higher risk contribution.
+    Assumes S_senti, S_fin, S_growth contribute to FCR (lower FCR is better).
     """
-    company_type_data = {
-        "Big firm (Stable)": {"S_senti": 0.7, "S_fin": 0.6, "S_growth": 0.7},
-        "Mid-size firm (Growing)": {"S_senti": 0.8, "S_fin": 0.8, "S_growth": 0.9},
-        "Startup (High Growth/Risk)": {"S_senti": 0.9, "S_fin": 0.95, "S_growth": 1.1}
+    data = {
+        "Company Type": ["Big firm", "Mid-size firm", "Startup", "Government/Non-profit"],
+        "S_senti": [0.6, 0.7, 0.8, 0.65], # Sentiment Score (lower is better for risk)
+        "S_fin": [0.5, 0.6, 0.85, 0.6],  # Financial Health (lower is better for risk)
+        "S_growth": [0.7, 0.65, 0.5, 0.75] # Growth & AI-Adoption (lower is better for risk, implies higher risk if not adapting)
     }
-    return company_type_data
+    return pd.DataFrame(data)
 
-def load_actuarial_parameters():
+def load_default_actuarial_parameters():
     """
-    Provides default values for actuarial parameters.
+    Provides default values for actuarial and environmental parameters.
     """
-    params = {
-        'beta_systemic': 0.10,  # Base annual probability of a systemic displacement event
-        'beta_individual': 0.50, # Base conditional probability of job loss for most vulnerable
-        'lambda_loading_factor': 1.5, # Loading Factor
-        'p_min_monthly': 20.00, # Minimum monthly premium
-        'decay_constant_a': 0.015, # for f_exp
-        'years_cap_y': 20 # for f_exp
+    return {
+        "w_CR": 0.4, # Weight for Company Risk Factor in V_raw
+        "w_US": 0.6, # Weight for Upskilling Factor in V_raw
+        "a_exp": 0.015, # Decay constant for f_exp
+        "Y_cap": 20, # Capped years of experience for f_exp
+        "gamma_gen": 0.005, # Weight for general skills in FUS
+        "gamma_spec": 0.002, # Weight for firm-specific skills in FUS (gamma_gen > gamma_spec)
+        "w_econ": 0.5, # Calibration weight for economic modifier in Hi
+        "w_inno": 0.5, # Calibration weight for AI innovation index in Hi
+        "beta_systemic": 0.10, # Base annual probability of a systemic displacement event
+        "beta_individual": 0.50, # Base conditional probability of job loss for most vulnerable
+        "loading_factor": 1.5, # Standard insurance multiplier (lambda)
+        "min_premium": 20.00, # Minimum monthly premium (P_min)
+        "ttv_default": 12 # Default Time-to-Value period in months
     }
-    return params
 
-def load_weights():
-    """
-    Provides default weights for various factors.
-    """
-    weights = {
-        'w_cr': 0.4, # Weight for Company Risk Factor in V_raw
-        'w_us': 0.6, # Weight for Upskilling Factor in V_raw
-        'w_econ': 0.5, # Weight for Economic Climate Modifier in H_i
-        'w_inno': 0.5, # Weight for AI Innovation Index in H_i
-        'w1_fcr': 0.33, 'w2_fcr': 0.33, 'w3_fcr': 0.34, # Weights for S_senti, S_fin, S_growth in FCR (sum to 1)
-        'gamma_gen': 0.7, # Weight for general skills in FUS (rewards portable skills more)
-        'gamma_spec': 0.3 # Weight for firm-specific skills in FUS
-    }
-    return weights
+def get_factor_value(df, key_column, value_column, key):
+    """Helper to get a factor value from a DataFrame based on a key."""
+    if key in df[key_column].values:
+        return df.loc[df[key_column] == key, value_column].iloc[0]
+    return 1.0 # Default to no impact if key not found (or handle error)
 
+def get_dict_value(data_dict, key):
+    """Helper to get a factor value from a dictionary based on a key."""
+    return data_dict.get(key, 1.0) # Default to no impact if key not found
