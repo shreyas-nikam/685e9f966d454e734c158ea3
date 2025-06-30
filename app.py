@@ -189,12 +189,13 @@ with tab1:
     st.write(f"**Human Capital Factor ($FHC$):** `{fhc:.3f}`")
     st.write(f"**Company Risk Factor ($FCR$):** `{fcr:.3f}`")
     st.write(f"**Upskilling Factor ($FUS$):** `{fus:.3f}`")
-    st.write(f"**Raw Idiosyncratic Risk ($V_{raw}$):** `{v_raw:.2f}`")
+    st.write(r"**Raw Idiosyncratic Risk ($V_{raw}$):**"\
+        f"`{v_raw:.2f}`")
 
     # Plot contributions for V_raw (simplified as bar chart showing FHC, and the two weighted components)
     st.plotly_chart(plot_factor_contributions_v_raw(fhc, fcr, fus, params["w_CR"], params["w_US"]))
 
-    st.markdown("""
+    st.markdown(r"""
     #### Systematic Risk ($H_i$) Components
     Your Systematic Risk is influenced by:
     - **Base Occupational Hazard ($H_{base}$):** Inherent risk of your job role.
@@ -206,8 +207,10 @@ with tab1:
     H_i = H_{base}(t) \cdot (w_{econ} M_{econ} + w_{inno} IAI)
     $$
     """)
-    st.write(f"**Base Occupational Hazard ($H_{base}(t)$):** `{current_h_base:.2f}` (Current Job)")
-    st.write(f"**Economic Climate Modifier ($M_{econ}$):** `{econ_modifier:.2f}`")
+    st.write(r"**Base Occupational Hazard ($H_{base}(t)$):**"\
+        f"`{current_h_base:.2f}` (Current Job)")
+    st.write(r"**Economic Climate Modifier ($M_{econ}$):** "\
+        f"`{econ_modifier:.2f}`")
     st.write(f"**AI Innovation Index ($IAI$):** `{iai_index:.2f}`")
 
     st.plotly_chart(plot_factor_contributions_hi(current_h_base, econ_modifier, iai_index, params["w_econ"], params["w_inno"]))
@@ -216,11 +219,11 @@ with tab2:
     st.subheader("Actuarial Breakdown: From Risk to Premium")
     st.markdown("This section details how your risk scores are translated into a potential monthly insurance premium.")
 
-    st.markdown("#### Total Payout Amount ($L_{payout}$)")
+    st.markdown(r"#### Total Payout Amount ($L_{payout}$)")
     st.latex("L_{payout} = \\left( \\frac{\\text{Annual Salary}}{12} \\right) \\cdot \\text{Coverage Duration} \\cdot \\text{Coverage Percentage}")
     st.write(f"The total potential payout if a claim is triggered: **${l_payout:,.2f}**")
 
-    st.markdown("""
+    st.markdown(r"""
     #### Annual Claim Probability ($P_{claim}$)
     This is the likelihood of a job displacement claim in a year, calculated as the joint probability of a systemic event and an individual loss given that event.
     $$
@@ -230,31 +233,36 @@ with tab2:
     st.latex("P_{systemic} = \\frac{H_i}{100} \\cdot \\beta_{systemic}")
     st.latex("P_{individual|systemic} = \\frac{V_i(t)}{100} \\cdot \\beta_{individual}")
     
-    st.write(f"Probability of a Systemic Event ($P_{systemic}$): **{p_systemic:.4f}**")
-    st.write(f"Conditional Probability of Individual Loss ($P_{individual|systemic}$): **{p_individual_systemic:.4f}**")
-    st.write(f"Annual Claim Probability ($P_{claim}$): **{p_claim:.4f}**")
+    st.write(r"Probability of a Systemic Event ($P_{systemic}$):"\
+        f"**{p_systemic:.4f}**")
+    st.write(r"Conditional Probability of Individual Loss ($P_{individual|systemic}$):"\
+        f"**{p_individual_systemic:.4f}**")
+    st.write(r"Annual Claim Probability ($P_{claim}$):"\
+        f"**{p_claim:.4f}**")
 
-    st.markdown("#### Annual Expected Loss ($E[Loss]$)")
+    st.markdown(r"#### Annual Expected Loss ($E[Loss]$)")
     st.latex("E[Loss] = P_{claim} \\cdot L_{payout}")
     st.write(f"The expected financial loss per year: **${expected_loss:,.2f}**")
 
-    st.markdown("#### Monthly Insurance Premium ($P_{monthly}$)")
+    st.markdown(r"#### Monthly Insurance Premium ($P_{monthly}$)")
     st.latex("P_{monthly} = \\max \\left( \\frac{E[Loss] \\cdot \\lambda}{12}, P_{min} \\right)")
     st.write(f"Your final estimated monthly premium: **${monthly_premium:,.2f}**")
 
 
 with tab3:
     st.subheader("Simulate Career Path Diversification")
-    st.markdown("""
+    st.markdown(r"""
     This simulation illustrates how **Career Path Diversification** can mitigate your Systematic Risk over time.
     By transitioning to a target career path with a lower inherent AI hazard ($H_{target}$), your overall systematic risk
     gradually reduces over a defined **Time-to-Value (TTV)** period.
     """)
     st.latex("H_{base}(k) = \\left(1 - \\frac{k}{TTV}\\right) H_{current} + \\left(\\frac{k}{TTV}\\right) H_{target}")
-    st.markdown(f"**Current Job Base Hazard ($H_{current}$):** `{current_h_base:.2f}` ({selected_job_title})")
+    st.markdown(r"**Current Job Base Hazard ($H_{current}$):** "\
+        f"`{current_h_base:.2f}` ({selected_job_title})")
 
     if simulate_transition:
-        st.markdown(f"**Target Job Base Hazard ($H_{target}$):** `{target_h_base:.2f}` ({selected_target_career_path})")
+        st.markdown(r"**Target Job Base Hazard ($H_{target}$):** "\
+            f"`{target_h_base:.2f}` ({selected_target_career_path})")
         st.markdown(f"**Transition Time-to-Value (TTV):** `{ttv_months}` months")
 
         # Generate data for the plot

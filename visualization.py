@@ -26,9 +26,9 @@ def plot_systematic_risk_evolution(simulation_data):
     )
 
     fig.update_traces(
-        hovertemplate=\"\"\"<b>Month:</b> %{x}<br>
+        hovertemplate="""<b>Month:</b> %{x}<br>
 <b>Systematic Risk ($H_i$):</b> %{y:.2f}
-<extra></extra>\"\"\"
+<extra></extra>"""
     )
     return fig
 
@@ -66,13 +66,13 @@ def plot_factor_contributions_hi(H_base, M_econ, IAI, w_econ, w_inno):
     # We can show the H_base and then the weighted modifiers' impact.
     
     data = {
-        'Component': ['Base Hazard ($H_{base}$)', 'Economic Modifier ($M_{econ}$)', 'AI Innovation ($IAI$)'],
+        'Component': [r'Base Hazard ($H_{base}$)', r'Economic Modifier ($M_{econ}$)', r'AI Innovation ($IAI$)'],
         'Value': [H_base, H_base * w_econ * M_econ, H_base * w_inno * IAI]
     }
     df = pd.DataFrame(data)
 
     fig = px.bar(df, x='Component', y='Value',
-                 title='Relative Contribution to Systematic Risk ($H_i$) Components',
+                 title=r'Relative Contribution to Systematic Risk ($H_i$) Components',
                  labels={'Value': 'Contribution Value', 'Component': 'Systematic Risk Component'},
                  color='Component')
     
