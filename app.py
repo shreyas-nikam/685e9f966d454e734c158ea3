@@ -15,7 +15,7 @@ st.sidebar.image("https://www.quantuniversity.com/assets/img/logo5.jpg")
 st.sidebar.divider()
 st.title("AI Risk Score - V4-2")
 
-st.markdown("""
+st.markdown(r"""
 In this lab, the **AI Risk Score - V4-2: Career Path Diversification Tool** is designed to help users understand
 and mitigate their exposure to systematic AI risk in their careers. Inspired by the principles of risk management,
 this application allows you to explore how different career choices and personal development efforts
@@ -66,9 +66,9 @@ company_type_data = st.session_state.company_type_data
 params = st.session_state.params
 
 # Sidebar for Inputs
-st.sidebar.header("Your Profile & Inputs")
+st.sidebar.header(r"Your Profile & Inputs")
 
-with st.sidebar.expander("1. Current Profile"):
+with st.sidebar.expander(r"I. Current Profile"):
     job_titles = job_data["Job Title"].tolist()
     selected_job_title = st.selectbox("Job Title", job_titles, index=job_titles.index("Software Engineer"))
     
@@ -86,11 +86,11 @@ with st.sidebar.expander("1. Current Profile"):
     company_types = company_type_data["Company Type"].tolist()
     selected_company_type = st.selectbox("Company Type", company_types, index=company_types.index("Big firm"))
 
-with st.sidebar.expander("2. Upskilling Efforts"):
+with st.sidebar.expander("II. Upskilling Efforts"):
     gen_skill_progress = st.slider("% General Skill Training Completed", 0, 100, 30)
     firm_skill_progress = st.slider("% Firm-Specific Skill Training Completed", 0, 100, 10)
 
-with st.sidebar.expander("3. Career Transition Simulation"):
+with st.sidebar.expander("III. Career Transition Simulation"):
     simulate_transition = st.checkbox("Simulate Career Transition")
     
     if simulate_transition:
@@ -107,7 +107,7 @@ with st.sidebar.expander("3. Career Transition Simulation"):
         ttv_months = params["ttv_default"] # Default value, not used if not simulating
         months_elapsed = 0 # Not used if not simulating
 
-with st.sidebar.expander("4. Actuarial Parameters"):
+with st.sidebar.expander("IV. Actuarial Parameters"):
     annual_salary = st.number_input("Annual Salary ($)", value=90000, min_value=0, step=1000)
     coverage_percentage = st.slider("Coverage Percentage (%)", 0, 100, 25)
     coverage_duration_months = st.number_input("Coverage Duration (Months)", value=6, min_value=1, max_value=24)
@@ -115,7 +115,7 @@ with st.sidebar.expander("4. Actuarial Parameters"):
     loading_factor = st.number_input("Loading Factor ($\lambda$)", value=params["loading_factor"], min_value=1.0, step=0.1)
     min_premium = st.number_input("Minimum Monthly Premium ($P_{min}$)", value=params["min_premium"], min_value=0.0, step=1.0)
 
-with st.sidebar.expander("5. Environmental Modifiers"):
+with st.sidebar.expander("V. Environmental Modifiers"):
     econ_modifier = st.slider("Economic Climate Modifier ($M_{econ}$)", 0.8, 1.2, 1.0, step=0.01,
                               help="0.8 = Recession, 1.0 = Normal, 1.2 = Boom")
     iai_index = st.slider("AI Innovation Index ($IAI$)", 0.8, 1.2, 1.0, step=0.01,
@@ -173,7 +173,7 @@ with tab1:
     st.subheader("Deep Dive: Risk Factor Contributions")
     st.markdown("Understanding how each component contributes to your overall risk helps in identifying areas for improvement.")
 
-    st.markdown("""
+    st.markdown(r"""
     #### Idiosyncratic Risk ($V_i(t)$) Components
     Your Idiosyncratic Risk is influenced by:
     - **Human Capital Factor ($FHC$):** Your foundational resilience (education, experience, institution).

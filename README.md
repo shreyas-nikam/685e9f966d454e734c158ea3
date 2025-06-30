@@ -71,13 +71,6 @@ Before running the application, ensure you have the following installed:
 
 2.  **Access the application in your browser:**  Streamlit will provide a local URL (usually `http://localhost:8501`) in your terminal. Open this URL in your web browser to access the application.
 
-3.  **Using the Application:**
-    *   **Upload Data:** Click the "Browse files" button or drag and drop a CSV or Excel file into the designated area.
-    *   **View Data:** The uploaded data will be displayed in a table.
-    *   **Filter Data:** Use the filter options above each column to narrow down the data. Type in a value and press enter to filter.
-    *   **Generate Charts:** Select the type of chart you want to generate from the sidebar.  Specify the columns for the x-axis and y-axis.  Click the "Generate Chart" button to display the chart.
-    *   **Customize Charts:** Adjust the chart title, axis labels, and other parameters in the sidebar.
-    *   **Download Charts:** Click the download button below the chart to save it as a PNG image.
 
 ## Project Structure
 
